@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Make It Yours - Editar fornecedor</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href="../static/assets/favicon.ico" />
+        <!-- Bootstrap icons-->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="../static/css/styles.css" rel="stylesheet" />
+    </head>
+    <body>
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container px-4 px-lg-5">
+                <a class="navbar-brand" href="/">Make It Yours</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="/">Página Inicial</a></li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Produtos</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item">Categorias</a></li>
+                                <li><hr class="dropdown-divider" /></li>
+                                {% for category in categories %}
+                                    <li><a class="dropdown-item" href={{ url_for('main.index', category = category.C_Nome) }}>{{ category.C_Nome }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="d-flex">
+                        <a class="btn btn-outline-dark" href="/admin">Painel Administrativo</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <!-- Product section-->
+        <section class="py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <h3>Editar o fornecedor {{ provider.F_Primeiro_Nome }}</h3>
+                <form action="/admin/editProvider" method="POST">
+                    <input class="form-control" type="hidden" name="provider_id" value="{{ provider.Fornecedor_ID }}">
+                    <label>Primeiro nome</label><br/>
+                    <input class="form-control" type="text" name="provider_name" value="{{ provider.F_Primeiro_Nome }}"><br/>
+                    <label>Segundo nome</label><br/>
+                    <input class="form-control" type="text" name="provider_second_name" value="{{ provider.F_Segundo_Nome }}"><br/>
+                    <label>Numero do Documento</label><br/>
+                    <input class="form-control" type="text" name="provider_document_number" value="{{ provider.F_Num_Documento }}"><br/>
+                    <label>Tipo do Documento</label><br/>
+                    <select class="form-control" name="provider_document_type">
+                        <option>B.I</option>
+                        <option>NUIT</option>
+                    </select><br/>
+                    <label>Telefone 1</label><br/>
+                    <input class="form-control" type="text" name="provider_cellphone1" value="{{ provider.F_Telefone_1 }}"><br/>
+                    <label>Telefone 2</label><br/>
+                    <input class="form-control" type="text" name="provider_cellphone2" value="{{ provider.F_Telefone_2 }}"><br/>
+                    <label>Email</label><br/>
+                    <input class="form-control" type="text" name="provider_email" value="{{ provider.F_Email }}"><br/>
+                    <label>Provincia</label><br/>
+                    <input class="form-control" type="text" name="provider_province" value="{{ provider.F_Provincia }}"><br/>
+                    <label>Distrito</label><br/>
+                    <input class="form-control" type="text" name="provider_city" value="{{ provider.F_Distrito }}"><br/>
+                    <label>Quarteirão</label><br/>
+                    <input class="form-control" type="text" name="provider_quart" value="{{ provider.F_Quarteirao }}"><br/>
+                    <label>Bairro</label><br/>
+                    <input class="form-control" type="text" name="provider_district" value="{{ provider.F_Bairro }}"><br/>
+                    <label>Rua</label><br/>
+                    <input class="form-control" type="text" name="provider_street" value="{{ provider.F_Rua }}"><br/>
+                    <input type="submit" class="btn btn-dark btn-lg" value="Editar">
+                </form>
+            </div>
+        </section>
+        <!-- Related items section-->
+        <section class="py-5 bg-light">
+            <div class="container px-4 px-lg-5 mt-5">
+                
+            </div>
+        </section>
+        <!-- Footer-->
+        <footer class="py-5 bg-dark">
+            <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Make It Yours 2021</p></div>
+        </footer>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="../static/js/scripts.js"></script>
+    </body>
+</html>

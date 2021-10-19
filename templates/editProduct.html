@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="description" content="" />
+        <meta name="author" content="" />
+        <title>Make It Yours - Editar produto</title>
+        <!-- Favicon-->
+        <link rel="icon" type="image/x-icon" href="../static/assets/favicon.ico" />
+        <!-- Bootstrap icons-->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet" />
+        <!-- Core theme CSS (includes Bootstrap)-->
+        <link href="../static/css/styles.css" rel="stylesheet" />
+    </head>
+    <body>
+        <!-- Navigation-->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container px-4 px-lg-5">
+                <a class="navbar-brand" href="/">Make It Yours</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0 ms-lg-4">
+                        <li class="nav-item"><a class="nav-link active" aria-current="page" href="/">Página Inicial</a></li>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">Produtos</a>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li><a class="dropdown-item">Categorias</a></li>
+                                <li><hr class="dropdown-divider" /></li>
+                                {% for category in categories %}
+                                    <li><a class="dropdown-item" href={{ url_for('main.index', category = category.C_Nome) }}>{{ category.C_Nome }}</a></li>
+                                {% endfor %}
+                            </ul>
+                        </li>
+                    </ul>
+                    <div class="d-flex">
+                        <a class="btn btn-outline-dark" href="/admin">Painel Administrativo</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+        <!-- Product section-->
+        <section class="py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <h3>Editar o produto {{ product.P_nome }}</h3>
+                <form action="/admin/editProduct" method="POST" enctype="multipart/form-data">
+                    <input class="form-control" type="hidden" name="product_id" value="{{ product.Produto_ID }}">
+                    <label>Nome do produto</label><br/>
+                    <input class="form-control" type="text" name="product_name" value="{{ product.P_nome }}"><br/>
+                    <label>Fornecedor</label><br/>
+                    <select class="form-control" name="provider_name">
+                        {% for provider in providers %}
+                            <option>{{ provider.F_Primeiro_Nome }}</option>
+                        {% endfor %}
+                    </select><br/>
+                    <label>Categoria</label><br/>
+                    <select class="form-control" name="category_name">
+                        {% for category in categories %}
+                            <option>{{ category.C_Nome }}</option>
+                        {% endfor %}
+                    </select><br/>
+                    <label>Marca</label><br/>
+                    <input class="form-control" type="text" name="product_brand" value="{{ product.P_Marca }}"><br/>
+                    <label>Modelo</label><br/>
+                    <input class="form-control" type="text" name="product_model" value="{{ product.P_Modelo }}"><br/>
+                    <label>Valor Unitário</label><br/>
+                    <input class="form-control" type="text" name="product_price" value="{{ product.P_ValorUnitario }}"><br/>
+
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <span class="input-group-text">Foto</span>
+                        </div>
+                        <div class="custom-file">
+                          <input type="file" name=file class="custom-file-input" id="inputGroupFile01">
+                        </div>
+                    </div>
+
+                    <input type="submit" class="btn btn-dark btn-lg" value="Adicionar">
+                </form>
+            </div>
+        </section>
+        <!-- Related items section-->
+        <section class="py-5 bg-light">
+            <div class="container px-4 px-lg-5 mt-5">
+                
+            </div>
+        </section>
+        <!-- Footer-->
+        <footer class="py-5 bg-dark">
+            <div class="container"><p class="m-0 text-center text-white">Copyright &copy; Make It Yours 2021</p></div>
+        </footer>
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="../static/js/scripts.js"></script>
+    </body>
+</html>
