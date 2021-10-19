@@ -16,6 +16,12 @@ def allowed_file(filename):
 
 @main.route('/')
 def index():
+    try:
+        cat = request.args.get('category', '')
+        categoria = Categoria.query.filter_by(C_Nome=cat).first()
+    except:
+        pass
+
     categories = Categoria.query.all()
     all_categories = []
     for category in categories:
@@ -23,8 +29,17 @@ def index():
 
     products = Produto.query.all()
     all_products = []
-    for product in products:
-        all_products.append(product)
+
+    if cat:
+        for product in products:
+            cat1 = int(product.Categoria_ID)
+            cat2 = int(categoria.Categoria_ID)
+            if cat1 == cat2:
+                all_products.append(product)
+    else:
+        for product in products:
+            all_products.append(product)
+
     return render_template('index.html', categories=all_categories, products=all_products)
 
 @main.route('/admin')
