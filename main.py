@@ -242,7 +242,6 @@ def addProviderPost():
     db.session.add(new_provider)
     db.session.commit()
 
-    return "</h3>Adicionado com sucesso</h3>"
     return redirect(url_for('main.providers'))
 
 @main.route('/admin/editProvider', methods=['GET', 'POST'])
