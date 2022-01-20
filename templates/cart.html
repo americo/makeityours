@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}Carrinho{% endblock %}
+{% block content %}
+        <!-- Header-->
+        <header class="bg-dark py-5">
+            <div class="container px-4 px-lg-5 my-5">
+                <div class="text-center text-white">
+                    <h1 class="display-4 fw-bolder">Make It Yours</h1>
+                    <p class="lead fw-normal text-white-50 mb-0">Carrinho.</p>
+                </div>
+            </div>
+        </header>
+        <!-- Section-->
+        <section class="py-5">
+            <div class="container px-4 px-lg-5 mt-5">
+                <div class="row gx-4 gx-lg-5 row-cols-2 row-cols-md-3 row-cols-xl-4 justify-content-center">
+                    {% for cart in carts %}
+
+                    <div class="col mb-5">
+                        <div class="card h-100">
+                            <!-- Product image-->
+                            <img class="card-img-top" src="./uploads/products/{{ products[carts.index(cart)].P_Imagem }}" alt="..." />
+                            <!-- Product details-->
+                            <div class="card-body p-4">
+                                <div class="text-center">
+                                    <!-- Product name-->
+                                    <h5 class="fw-bolder">{{ products[carts.index(cart)].P_nome }}</h5>
+                                    <h6 class=""><b>Marca:</b> {{ products[carts.index(cart)].P_Marca }}</h6>
+                                    <h6 class=""><b>Modelo:</b> {{ products[carts.index(cart)].P_Modelo }}</h6>
+                                    <h6 class=""><b>Quantidade:</b> {{ cart.Quantidade }}</h6>
+                                    <!-- Product price-->
+                                    Valor: R$ {{ cart.Total_A_Pagar }}
+                                </div>
+                            </div>
+                            <!-- Product actions-->
+                            <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                                <div class="text-center">
+                                    <a class="btn btn-outline-dark mt-auto" href="{{ url_for('main.deleteCart', id = cart.Cart_ID) }}">Remover</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                <hr>
+                <div class="card-footer p-4 pt-0 border-top-0 bg-transparent">
+                    <div class="text-center">
+                            <h6>Valor total: R$ {{ total_to_pay }}</h6>
+                            <button type="button" class="btn btn-outline-dark mt-auto" data-toggle="modal" data-target="#modalConcluirPagamento">Concluir pagamento</button>
+                    </div>
+                </div>
+
+                <!-- Modal -->
+                <div class="container">
+                <div id="modalConcluirPagamento" class="modal fade" role="dialog">
+                    <div class="modal-dialog">
+                
+                    <!-- Modal content-->
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <button type="button" class="close btn" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">Adicione endereço de envio</h4>
+                        </div>
+                        <div class="modal-body">
+                            <form class="form-signin" action="/orders" method="POST">
+                                <input type="hidden" id="inputName" class="form-control" name="fullname">
+                                <input type="hidden" id="inputUserId" class="form-control" name="user_id" value={{ current_user.Usuario_ID }}>
+                                <label for="inputState" class="sr-only">Estado</label>
+                                <input type="text" id="inputState" class="form-control" name="state" placeholder="Seu estado" required autofocus>
+                                <label for="inputCity" class="sr-only">Cidade</label>
+                                <input type="text" id="inputCity" class="form-control" name="city" placeholder="Sua cidade" required autofocus>
+                                <label for="inputAddress" class="sr-only">Endereço</label>
+                                <input type="text" id="inputAddress" class="form-control" name="address" placeholder="Seu endereço" required autofocus>
+                                <label for="inputNumber" class="sr-only">Número da residência</label>
+                                <input type="text" id="inputNumber" class="form-control" name="home_number" placeholder="Número da sua residência" required autofocus>
+                                <label for="inputPhone" class="sr-only">Telefone/Celular</label>
+                                <input type="text" id="inputPhone" class="form-control" name="phone" placeholder="Número da sua residência" required autofocus><br/>
+                                <button class="btn btn-primary btn-block" type="submit">Concluir</button>
+                              </form>
+                        </div>
+                        <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                
+                    </div>
+                </div>
+                
+            </div>
+        </section>
+        {% endblock %}
