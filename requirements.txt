@@ -1,3 +1,4 @@
 flask
 flask_login
 SQLAlchemy<1.4.0
+flask_cors

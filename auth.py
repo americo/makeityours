@@ -23,7 +23,7 @@ def signin():
         if not user or not check_password_hash(user.U_Senha, password):
             return render_template("signin.html", login_failed=True)
 
-        login_user(user, remember=False)
+        login_user(user, remember=True)
 
         return redirect(url_for("main.index"))
 

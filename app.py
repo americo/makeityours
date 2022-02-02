@@ -1,6 +1,8 @@
+from flask import render_template_string, request
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 from database import app, db
+from urllib.parse import unquote
 
 
 def create_app(app):
@@ -24,6 +26,20 @@ def create_app(app):
     from main import main as main_blueprint
 
     app.register_blueprint(main_blueprint)
+
+    from api import api as api_blueprint
+
+    app.register_blueprint(api_blueprint)
+
+    @app.errorhandler(404)
+    def page_not_found(e):
+        template = """
+        <h2>Oops! Esta página não existe.</h2>
+        %s
+        """ % (
+            unquote(request.url)
+        )
+        return render_template_string(template), 404
 
     return app
 

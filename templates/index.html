@@ -21,7 +21,7 @@
                                 <button class="btn btn-dark" onclick="document.getElementById('searchForm').submit()">Pesquisar</button>
                             </form>
                             {% if hasSearchQuery == True %}
-                                <p>Você pesquisou por: <b>{{ searchQuery }}</b> </p>
+                                <p><iframe src="/?message=Você pesquisou por <b>{{ searchQuery }}</b>" width="100%"></iframe></p>
                             {% endif %}
                         </div>                            
                     </div>

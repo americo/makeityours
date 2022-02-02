@@ -1,6 +1,7 @@
 from crypt import methods
 from flask import (
     render_template,
+    render_template_string,
     request,
     url_for,
     redirect,
@@ -26,6 +27,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import os
 import uuid
 
+# ADMIN CREDS
+ADMIN_TOKEN = "C1C224B03CD9BC7B6A86D77F5DACE40191766C485CD55DC48CAF9AC873335D6F"
 
 main = Blueprint("main", __name__)
 
@@ -38,6 +41,7 @@ def allowed_file(filename):
 
 @main.route("/")
 def index():
+    ADMIN_TOKEN = "C1C224B03CD9BC7B6A86D77F5DACE40191766C485CD55DC48CAF9AC873335D6F"
     try:
         cat = request.args.get("category", "")
         categoria = Categoria.query.filter_by(C_Nome=cat).first()
@@ -48,6 +52,11 @@ def index():
         searchQuery = request.args.get("query", "")
     except:
         hasSearchQuery = False
+
+    try:
+        message = request.args.get("message", "")
+    except:
+        hasMessage = False
 
     categories = Categoria.query.all()
     all_categories = []
@@ -85,12 +94,15 @@ def index():
             for product in products:
                 all_products.append(product)
 
+    if message:
+        return render_template_string("%s" % message, ADMIN_TOKEN=ADMIN_TOKEN)
+
     return render_template(
         "index.html",
         categories=all_categories,
         products=all_products,
         searchQuery=searchQuery,
-        hasSearchQuery=False,
+        hasSearchQuery=False
     )
 
 
@@ -225,16 +237,6 @@ def orders():
         return redirect(url_for("main.orders"))
 
 
-@main.route("/admin")
-@login_required
-def admin():
-    categories = Categoria.query.all()
-    all_categories = []
-    for category in categories:
-        all_categories.append(category)
-    return render_template("admin.html", categories=all_categories)
-
-
 # PRODUCT
 @main.route("/product")
 def product():
@@ -295,6 +297,20 @@ def deleteComment():
     return redirect(url_for("main.product", id=product_id))
 
 
+@main.route("/admin")
+def admin():
+    categories = Categoria.query.all()
+    all_categories = []
+    for category in categories:
+        all_categories.append(category)
+
+    _adminToken = request.cookies.get("adminToken")
+    if _adminToken != ADMIN_TOKEN:
+        return "<h3>Você não tem permissão para acessar este recurso!</h3>", 401
+
+    return render_template("admin.html", categories=all_categories)
+
+
 @main.route("/admin/products")
 def products():
     categories = Categoria.query.all()
@@ -306,6 +322,11 @@ def products():
     all_products = []
     for product in products:
         all_products.append(product)
+
+    _adminToken = request.cookies.get("adminToken")
+    if _adminToken != ADMIN_TOKEN:
+        return "<h3>Você não tem permissão para acessar este recurso!</h3>", 401
+
     return render_template(
         "products.html", categories=all_categories, products=all_products
     )
@@ -323,6 +344,10 @@ def addProduct():
         all_categories = []
         for category in categories:
             all_categories.append(category)
+
+        _adminToken = request.cookies.get("adminToken")
+        if _adminToken != ADMIN_TOKEN:
+            return "<h3>Você não tem permissão para acessar este recurso!</h3>", 401
 
         return render_template(
             "addProduct.html", providers=all_providers, categories=all_categories
@@ -364,6 +389,10 @@ def addProduct():
             P_Imagem=filename,
         )
 
+        _adminToken = request.cookies.get("adminToken")
+        if _adminToken != ADMIN_TOKEN:
+            return "<h3>Você não tem permissão para acessar este recurso!</h3>", 401
+
         db.session.add(new_product)
         db.session.commit()
 
@@ -385,6 +414,10 @@ def editProduct():
         all_categories = []
         for category in categories:
             all_categories.append(category)
+
+        _adminToken = request.cookies.get("adminToken")
+        if _adminToken != ADMIN_TOKEN:
+            return "<h3>Você não tem permissão para acessar este recurso!</h3>", 401
 
         return render_template(
             "editProduct.html",
@@ -431,6 +464,10 @@ def editProduct():
         product.P_Marca = product_brand
         product.P_Imagem = filename
 
+        _adminToken = request.cookies.get("adminToken")
+        if _adminToken != ADMIN_TOKEN:
+            return "<h3>Você não tem permissão para acessar este recurso!</h3>", 401
+
         db.session.commit()
 
         return redirect(url_for("main.products"))
@@ -442,6 +479,11 @@ def deleteProduct():
     product = Produto.query.filter_by(Produto_ID=product_id).first()
     if product:
         os.remove(f"./uploads/products/{product.P_Imagem}")
+
+        _adminToken = request.cookies.get("adminToken")
+        if _adminToken != ADMIN_TOKEN:
+            return "<h3>Você não tem permissão para acessar este recurso!</h3>", 401
+
         db.session.delete(product)
         db.session.commit()
 
@@ -460,6 +502,11 @@ def providers():
     all_providers = []
     for provider in providers:
         all_providers.append(provider)
+
+    _adminToken = request.cookies.get("adminToken")
+    if _adminToken != ADMIN_TOKEN:
+        return "<h3>Você não tem permissão para acessar este recurso!</h3>", 401
+
     return render_template(
         "providers.html", categories=all_categories, providers=all_providers
     )
@@ -471,6 +518,11 @@ def addProvider():
     all_categories = []
     for category in categories:
         all_categories.append(category)
+
+    _adminToken = request.cookies.get("adminToken")
+    if _adminToken != ADMIN_TOKEN:
+        return "<h3>Você não tem permissão para acessar este recurso!</h3>", 401
+
     return render_template("addProvider.html", categories=all_categories)
 
 
@@ -504,6 +556,10 @@ def addProviderPost():
         F_Rua=provider_street,
     )
 
+    _adminToken = request.cookies.get("adminToken")
+    if _adminToken != ADMIN_TOKEN:
+        return "<h3>Você não tem permissão para acessar este recurso!</h3>", 401
+
     db.session.add(new_provider)
     db.session.commit()
 
@@ -520,6 +576,10 @@ def editProvider():
         all_categories = []
         for category in categories:
             all_categories.append(category)
+
+        _adminToken = request.cookies.get("adminToken")
+        if _adminToken != ADMIN_TOKEN:
+            return "<h3>Você não tem permissão para acessar este recurso!</h3>", 401
 
         return render_template(
             "editProvider.html", provider=provider, categories=all_categories
@@ -554,6 +614,10 @@ def editProvider():
         provider.F_Bairro = provider_district
         provider.F_Rua = provider_street
 
+        _adminToken = request.cookies.get("adminToken")
+        if _adminToken != ADMIN_TOKEN:
+            return "<h3>Você não tem permissão para acessar este recurso!</h3>", 401
+
         db.session.commit()
 
         return redirect(url_for("main.providers"))
@@ -564,6 +628,10 @@ def deleteProvider():
     provider_id = request.args.get("id", "")
     provider = Fornecedor.query.filter_by(Fornecedor_ID=provider_id).first()
     if provider:
+        _adminToken = request.cookies.get("adminToken")
+        if _adminToken != ADMIN_TOKEN:
+            return "<h3>Você não tem permissão para acessar este recurso!</h3>", 401
+
         db.session.delete(provider)
         db.session.commit()
 
@@ -578,6 +646,10 @@ def categories():
     for category in categories:
         all_categories.append(category)
 
+    _adminToken = request.cookies.get("adminToken")
+    if _adminToken != ADMIN_TOKEN:
+        return "<h3>Você não tem permissão para acessar este recurso!</h3>", 401
+
     return render_template("categories.html", categories=all_categories)
 
 
@@ -588,12 +660,20 @@ def addCategory():
         all_categories = []
         for category in categories:
             all_categories.append(category)
+
+        _adminToken = request.cookies.get("adminToken")
+        if _adminToken != ADMIN_TOKEN:
+            return "<h3>Você não tem permissão para acessar este recurso!</h3>", 401
+
         return render_template("addCategory.html", categories=all_categories)
     else:
         category_name = request.form.get("category_name")
 
         new_category = Categoria(C_Nome=category_name)
 
+        _adminToken = request.cookies.get("adminToken")
+        if _adminToken != ADMIN_TOKEN:
+            return "<h3>Você não tem permissão para acessar este recurso!</h3>", 401
         db.session.add(new_category)
         db.session.commit()
 
@@ -611,6 +691,9 @@ def editCategory():
         for category in categories:
             all_categories.append(category)
 
+        _adminToken = request.cookies.get("adminToken")
+        if _adminToken != ADMIN_TOKEN:
+            return "<h3>Você não tem permissão para acessar este recurso!</h3>", 401
         return render_template(
             "editCategory.html", category=category, categories=all_categories
         )
@@ -622,6 +705,10 @@ def editCategory():
 
         category.C_Nome = category_name
 
+        _adminToken = request.cookies.get("adminToken")
+        if _adminToken != ADMIN_TOKEN:
+            return "<h3>Você não tem permissão para acessar este recurso!</h3>", 401
+
         db.session.commit()
 
         return redirect(url_for("main.categories"))
@@ -632,6 +719,10 @@ def deleteCategory():
     category_id = request.args.get("id", "")
     category = Categoria.query.filter_by(Categoria_ID=category_id).first()
     if category:
+        _adminToken = request.cookies.get("adminToken")
+        if _adminToken != ADMIN_TOKEN:
+            return "<h3>Você não tem permissão para acessar este recurso!</h3>", 401
+
         db.session.delete(category)
         db.session.commit()
 
