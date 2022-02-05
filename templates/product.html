@@ -87,7 +87,8 @@
                             <form action="/addComment" method="POST">
                                 <br/>
                                 <textarea placeholder="Faca um comentário" name="comment" rows="5" cols="60" style="border: 1px solid black; border-radius: 5px;"></textarea>
-                                <input type="hidden" name="product_id" value="{{ product.Produto_ID }}"><br/>
+                                <input type="hidden" name="product_id" value="{{ product.Produto_ID }}">
+                                <input type="hidden" name="email" value="{{ current_user.U_Email }}"><br/>
                                 <input class="btn btn-primary" type="submit" value="Enviar">
                             </form>
                         </div>

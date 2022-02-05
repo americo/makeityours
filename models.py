@@ -67,6 +67,7 @@ class Pedido(UserMixin, db.Model):
     Usuario_ID = db.Column(db.Integer)
     Produto_ID = db.Column(db.Integer)
     Quantidade = db.Column(db.Integer)
+    Pedido_Codigo = db.Column(db.String(200))
     Total_A_Pagar = db.Column(db.Integer)
 
     def get_id(self):

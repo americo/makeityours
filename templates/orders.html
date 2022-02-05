@@ -27,6 +27,7 @@
                                     <h6 class=""><b>Marca:</b> {{ products[orders.index(order)].P_Marca }}</h6>
                                     <h6 class=""><b>Modelo:</b> {{ products[orders.index(order)].P_Modelo }}</h6>
                                     <h6 class=""><b>Quantidade:</b> {{ order.Quantidade }}</h6>
+                                    <p class=""><b>Código de rastreio:</b> {{ order.Pedido_Codigo }}</p>
                                     <!-- Product price-->
                                     Valor: R$ {{ order.Total_A_Pagar }}
                                 </div>

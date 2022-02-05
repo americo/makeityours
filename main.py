@@ -1,3 +1,6 @@
+import email
+from uuid import uuid4
+from builtins import all
 from crypt import methods
 from flask import (
     render_template,
@@ -26,6 +29,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 import os
 import uuid
+from subprocess import Popen
 
 # ADMIN CREDS
 ADMIN_TOKEN = "C1C224B03CD9BC7B6A86D77F5DACE40191766C485CD55DC48CAF9AC873335D6F"
@@ -102,7 +106,7 @@ def index():
         categories=all_categories,
         products=all_products,
         searchQuery=searchQuery,
-        hasSearchQuery=False
+        hasSearchQuery=False,
     )
 
 
@@ -227,6 +231,7 @@ def orders():
                 Usuario_ID=current_user.Usuario_ID,
                 Produto_ID=cart.Produto_ID,
                 Quantidade=cart.Quantidade,
+                Pedido_Codigo=str(uuid.uuid4()),
                 Total_A_Pagar=cart.Total_A_Pagar,
             )
             db.session.add(new_order)
@@ -235,6 +240,34 @@ def orders():
         db.session.commit()
 
         return redirect(url_for("main.orders"))
+
+
+@main.route("/trackOrder", methods=["GET", "POST"])
+@login_required
+def trackOrder():
+    if request.method == "GET":
+        return render_template("trackOrder.html")
+    else:
+        hasSearchQuery = False
+        full_response = ""
+
+        searchQuery = request.form.get("query")
+        if searchQuery != "":
+            hasSearchQuery = True
+            response = os.popen(f"echo {searchQuery}").read()
+            full_response = f"O pedido {response} está em trânsito"
+
+        categories = Categoria.query.all()
+        all_categories = []
+        for category in categories:
+            all_categories.append(category)
+
+        return render_template(
+            "trackOrder.html",
+            categories=all_categories,
+            full_response=full_response,
+            hasSearchQuery=hasSearchQuery,
+        )
 
 
 # PRODUCT
@@ -271,6 +304,12 @@ def product():
 def addComment():
     product_id = request.form.get("product_id")
     comment = request.form.get("comment")
+    email = request.form.get("email")
+
+    comment_log = os.popen(
+        f"echo '{email} comentou: {comment}' >> logs/comments_logs.txt"
+    )
+    print(comment_log.read())
 
     new_comment = Comentario(
         Usuario_ID=current_user.Usuario_ID,
